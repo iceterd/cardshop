@@ -19,7 +19,7 @@ def render(user_id: int, user: dict):
 
     st.markdown(f"""
     <div class="hero-banner">
-      <h1>Welcome back,<br>{first_name}! U0001F44B</h1>
+      <h1>Welcome back,<br>{first_name}! 👋</h1>
       <p>Airtime top-ups, gift cards &amp; crypto payments — delivered instantly, supported always.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -27,16 +27,16 @@ def render(user_id: int, user: dict):
     # —— Quick-action buttons ———————————————————————————————————————
     qa_col1, qa_col2, qa_col3 = st.columns(3)
     with qa_col1:
-        if st.button("U0001F4F1 Top Up Airtime", use_container_width=True):
-            st.session_state["page"] = "U0001F4F1 Airtime & Data"
+        if st.button("📱 Top Up Airtime", use_container_width=True):
+            st.session_state["page"] = "📱 Airtime & Data"
             st.rerun()
     with qa_col2:
-        if st.button("U0001F381 Buy Gift Card", use_container_width=True):
-            st.session_state["page"] = "U0001F381 Gift Cards"
+        if st.button("🎁 Buy Gift Card", use_container_width=True):
+            st.session_state["page"] = "🎁 Gift Cards"
             st.rerun()
     with qa_col3:
-        if st.button("U0001F4B0 Pay with Crypto", use_container_width=True):
-            st.session_state["page"] = "U0001F4B0 Payments"
+        if st.button("💰 Pay with Crypto", use_container_width=True):
+            st.session_state["page"] = "💰 Payments"
             st.rerun()
 
     st.divider()
@@ -72,7 +72,7 @@ def render(user_id: int, user: dict):
     </div>""", unsafe_allow_html=True)
 
     # —— Popular gift cards —————————————————————————————————————
-    st.markdown('<div class="section-header">U0001F525 Popular Gift Cards</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">🔥 Popular Gift Cards</div>', unsafe_allow_html=True)
     popular = [gc for gc in GIFT_CARDS if gc["popular"]]
     cols = st.columns(4)
     for idx, gc in enumerate(popular[:8]):
@@ -99,14 +99,14 @@ def render(user_id: int, user: dict):
     with col2:
         st.markdown("""
     <div class="product-card">
-      <div class="card-icon">U0001F6E1️</div>
+      <div class="card-icon">🛡️</div>
       <h3>Secure &amp; Trusted</h3>
       <p>Encrypted transactions, verified codes, and a money-back guarantee on every purchase.</p>
     </div>""", unsafe_allow_html=True)
     with col3:
         st.markdown("""
     <div class="product-card">
-      <div class="card-icon">U0001F91D</div>
+      <div class="card-icon">🤝</div>
       <h3>Real Human Support</h3>
       <p>Live chat, WhatsApp, and AI assistant — we're here 24/7. No bots that go in circles.</p>
     </div>""", unsafe_allow_html=True)
