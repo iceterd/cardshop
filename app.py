@@ -30,6 +30,7 @@ if not is_logged_in():
     st.stop()
 
 user = get_current_user()
+user_id = user["id"]
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -42,7 +43,7 @@ with st.sidebar:
     st.divider()
 
     # Live wallet balance
-    wallet_bal = get_wallet_balance(user["id"])
+    wallet_bal = get_wallet_balance(user_id)
     st.markdown(f"""
     <div class='wallet-card'>
         <div class='wallet-label'>Wallet Balance</div>
@@ -50,23 +51,21 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # Quick fund button
     if st.button("⚡ Fund Wallet", use_container_width=True, key="sidebar_fund"):
-        st.session_state["active_page"] = "Payments"
+        st.session_state["active_page"] = "💳 Payments"
         st.rerun()
     st.divider()
 
-    # Navigation
     pages = [
-        ("🏠 Home",       "Home"),
-        ("📱 Airtime",    "Airtime"),
-        ("🎁 Gift Cards", "Gift Cards"),
-        ("💳 Payments",   "Payments"),
-        ("📋 Orders",     "Orders"),
-        ("💬 Support",    "Support"),
+        ("🏠 Home",            "🏠 Home"),
+        ("📱 Airtime & Data", "📱 Airtime & Data"),
+        ("🎁 Gift Cards",     "🎁 Gift Cards"),
+        ("💳 Payments",       "💳 Payments"),
+        ("📊 My Orders",      "📊 My Orders"),
+        ("💬 Support",        "💬 Support"),
     ]
     if "active_page" not in st.session_state:
-        st.session_state["active_page"] = "Home"
+        st.session_state["active_page"] = "🏠 Home"
 
     for label, page_key in pages:
         active = st.session_state["active_page"] == page_key
@@ -76,8 +75,6 @@ with st.sidebar:
             st.rerun()
 
     st.divider()
-
-    # User info & Reloadly status
     st.markdown(f"""
     <div style='font-size:0.8rem; color:#888; text-align:center;'>
         👤 {user['full_name']}<br>
@@ -99,21 +96,32 @@ with st.sidebar:
         st.rerun()
 
 # ── Page routing ─────────────────────────────────────────────────────────────────
-page = st.session_state.get("active_page", "Home")
+page = st.session_state.get("active_page", "🏠 Home")
 
-if page == "Home":
+if page == "🏠 Home":
     from pages.home import render
-elif page == "Airtime":
+    render(user_id, user)
+
+elif page == "📱 Airtime & Data":
     from pages.airtime import render
-elif page == "Gift Cards":
+    render(user_id)
+
+elif page == "🎁 Gift Cards":
     from pages.gift_cards import render
-elif page == "Payments":
+    render(user_id)
+
+elif page == "💳 Payments":
     from pages.payments import render
-elif page == "Orders":
+    render(user_id)
+
+elif page == "📊 My Orders":
     from pages.orders import render
-elif page == "Support":
+    render(user_id)
+
+elif page == "💬 Support":
     from pages.support import render
+    render(user_id)
+
 else:
     from pages.home import render
-
-render(user)
+    render(user_id, user)
