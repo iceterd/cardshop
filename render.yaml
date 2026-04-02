@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: cardshop
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: RELOADLY_CLIENT_ID
+        sync: false          # Set manually in Render dashboard
+      - key: RELOADLY_CLIENT_SECRET
+        sync: false
+      - key: RELOADLY_ENV
+        value: sandbox       # Change to "production" when ready
+      - key: DB_PATH
+        value: /var/data/cardshop.db
+    disk:
+      name: cardshop-data
+      mountPath: /var/data
+      sizeGB: 1
