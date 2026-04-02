@@ -125,7 +125,7 @@ def get_transaction_stats(user_id: int) -> dict:
         row = conn.execute(
             """SELECT
                 COUNT(*) AS total_transactions,
-                SUM(CASE WHEN type NOT IN ('Wallet', 'Crypto Deposit', 'PayPal Deposit') THEN 1 ELSE 0 END) AS total_orders,
+                COALESCE(SUM(CASE WHEN type NOT IN ('Wallet', 'Crypto Deposit', 'PayPal Deposit') THEN 1 ELSE 0 END), 0) AS total_orders,
                 COALESCE(SUM(CASE WHEN type NOT IN ('Wallet', 'Crypto Deposit', 'PayPal Deposit') THEN amount ELSE 0 END), 0) AS total_spent
                FROM transactions WHERE user_id = ?""",
             (user_id,),
