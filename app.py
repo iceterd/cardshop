@@ -4,27 +4,26 @@ Handles auth gate, sidebar navigation, and page routing.
 """
 
 import streamlit as st
-from utils.db import init_db, get_wallet_balance, update_wallet, add_transaction
+from utils.db import init_db, get_wallet_balance
 from utils.auth import render_auth_page, is_logged_in, get_current_user, logout_user
 from utils.styles import inject_css
-from utils.constants import generate_order_id
 from utils.reloadly import reloadly_status
 
-# ── Page config (must be first Streamlit call) ────────────────────────────────────
+# ── Page config (must be first Streamlit call) ─────────────────────────────────
 st.set_page_config(
     page_title="Cardshop",
-    page_icon="🛒",
+    page_icon="🛝",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ── Initialise DB & CSS ─────────────────────────────────────────────────────
+# ── Initialise DB & CSS ───────────────────────────────────
 if "db_initialised" not in st.session_state:
     init_db()
     st.session_state["db_initialised"] = True
 inject_css()
 
-# ── Auth gate ───────────────────────────────────────────────────────────────
+# ── Auth gate ───────────────────────────────────────────
 if not is_logged_in():
     render_auth_page()
     st.stop()
@@ -32,11 +31,11 @@ if not is_logged_in():
 user = get_current_user()
 user_id = user["id"]
 
-# ── Sidebar ───────────────────────────────────────────────────────────────────
+# ── Sidebar ─────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
     <div style='text-align:center; padding: 1rem 0;'>
-        <h1 style='font-size:2rem; margin:0;'>🛒</h1>
+        <h1 style='font-size:2rem; margin:0;'>🛝</h1>
         <h2 style='font-size:1.2rem; margin:0; color:#FF6B35;'>Cardshop</h2>
     </div>
     """, unsafe_allow_html=True)
@@ -57,12 +56,12 @@ with st.sidebar:
     st.divider()
 
     pages = [
-        ("🏠 Home",            "🏠 Home"),
+        ("🏠 Home", "🏠 Home"),
         ("📱 Airtime & Data", "📱 Airtime & Data"),
-        ("🎁 Gift Cards",     "🎁 Gift Cards"),
-        ("💳 Payments",       "💳 Payments"),
-        ("📊 My Orders",      "📊 My Orders"),
-        ("💬 Support",        "💬 Support"),
+        ("🎁 Gift Cards", "🎁 Gift Cards"),
+        ("💳 Payments", "💳 Payments"),
+        ("📊 My Orders", "📊 My Orders"),
+        ("💬 Support", "💬 Support"),
     ]
     if "active_page" not in st.session_state:
         st.session_state["active_page"] = "🏠 Home"
@@ -95,33 +94,41 @@ with st.sidebar:
         logout_user()
         st.rerun()
 
-# ── Page routing ─────────────────────────────────────────────────────────────────
+# ── Page routing ──────────────────────────────────────────────────
 page = st.session_state.get("active_page", "🏠 Home")
 
-if page == "🏠 Home":
-    from pages.home import render
-    render(user_id, user)
+def _render_page(page: str):
+    if page == "🏠 Home":
+        from pages.home import render
+        render(user_id, user)
 
-elif page == "📱 Airtime & Data":
-    from pages.airtime import render
-    render(user_id)
+    elif page == "📱 Airtime & Data":
+        from pages.airtime import render
+        render(user_id)
 
-elif page == "🎁 Gift Cards":
-    from pages.gift_cards import render
-    render(user_id)
+    elif page == "🎁 Gift Cards":
+        from pages.gift_cards import render
+        render(user_id)
 
-elif page == "💳 Payments":
-    from pages.payments import render
-    render(user_id)
+    elif page == "💳 Payments":
+        from pages.payments import render
+        render(user_id)
 
-elif page == "📊 My Orders":
-    from pages.orders import render
-    render(user_id)
+    elif page == "📊 My Orders":
+        from pages.orders import render
+        render(user_id)
 
-elif page == "💬 Support":
-    from pages.support import render
-    render(user_id)
+    elif page == "💬 Support":
+        from pages.support import render
+        render(user_id)
 
-else:
-    from pages.home import render
-    render(user_id, user)
+    else:
+        from pages.home import render
+        render(user_id, user)
+
+try:
+    _render_page(page)
+except Exception as exc:
+    st.error("⚠️ Something went wrong loading this page. Please try refreshing.")
+    with st.expander("Show technical details"):
+        st.exception(exc)
